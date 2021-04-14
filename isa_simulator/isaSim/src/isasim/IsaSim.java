@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * General Description
  * Machine type: 10 bit decimal
- * 
+ * This is an ISA Generator consisted of 5 functions
  * @author Sheryl
  */
 public class IsaSim {
@@ -39,7 +39,6 @@ public class IsaSim {
                     break;
                 }
                 ISA[cnt] = line;
-                //System.out.println("isa["+cnt+"]: "+ISA[cnt]);
                 cnt++;
             }
         }catch(IOException ioe){
@@ -184,7 +183,7 @@ public class IsaSim {
             result = "-5";
         }else if (str.equals("LOOP")){
             result = "+6";
-        }else if (str.equals("PRINT")){
+        }else if (str.equals("PRNT")){
             result = "+7";
         }else if (str.equals("STOP")){
             result = "-9";
@@ -264,7 +263,6 @@ public class IsaSim {
             case "-3": //LABL
                 System.out.println("position "+pc+" is a LABL: "+stoi(op1));
                 labl_position[pc] = stoi(op1);
-                //pc++;
                 break;
             case "-1": //SUB
                 float sub_result = var_val[stoi(op1)-1][0] - var_val[stoi(op2)-1][0];
@@ -278,20 +276,16 @@ public class IsaSim {
                 System.out.println(var_name [stoi(op2)-1]+location+": "+var_val [stoi(op2)-1][location]);
                 break;
             case "+6": //LOOP, -LOOP P Q R: go to LABL R (Q-P) times
-                float x = var_val[stoi(op2)-1][0] - var_val[(stoi(op1)-1)][0];
-                System.out.println("x = "+x);
+                float x = var_val[stoi(op2)-1][0] - var_val[(stoi(op1)-1)][0];                
                 for(int i = 0; i < 50; i++){
                     if(labl_position[i] == stoi(op3)){
-                        position = i;
-                        System.out.println("Going to position:"+position);  
+                        position = i;                          
                     }  
                 }                
                 loop_times = loop_times + 1;
-                System.out.println("loop times: "+loop_times);
                 if(x > 1) {
                     pc = position;
                     var_val[1][0] = (float)(var_val[1][0]+1.0);
-                    System.out.println("I = "+var_val[1][0]);
                 }
                 else{
                     loop_times = 0;
@@ -320,8 +314,7 @@ public class IsaSim {
                     System.out.println(var_val[stoi(op1)-1][0]+">="+var_val[stoi(op2)-1][0]);
                     for(int i = 0; i < 50; i++){
                         if(labl_position[i] == stoi(op3)){
-                            position = i;
-                            System.out.println("Going to position:"+position);  
+                            position = i; 
                         }  
                     }
                     pc = position;
@@ -331,15 +324,12 @@ public class IsaSim {
                 break;
             case "-5": //GETA -GETA P Q R: assign the Qth element in array P into R
                 float y = var_val[stoi(op2)-1][0];
-                System.out.println("y = "+y);
-                System.out.println(var_val[stoi(op1)-1][0]);
                 var_val[stoi(op3)-1][0] = var_val[stoi(op1)-1][(int)y];
                 System.out.println(var_name[stoi(op3)-1]+": "+var_val[stoi(op3)-1][0]);
                 break;
             case "+7": //PRINT -PRNT P: print the contents of P
-                System.out.println(var_val[stoi(op1)-1][0]);
-                break;
-                
+                System.out.println(var_name[stoi(op1)-1]+": "+var_val[stoi(op1)-1][0]);
+                break;               
             //next instruction
             }
         pc = pc+1;
